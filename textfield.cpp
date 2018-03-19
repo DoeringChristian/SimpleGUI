@@ -12,6 +12,7 @@ TextField::TextField(){
     this->cursor_width = 1;
     this->lines = 0;
     this->type = ONE_LINE;
+    this->is_visible = true;
 }
 
 TextField::TextField(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size){
@@ -31,6 +32,7 @@ TextField::TextField(sf::RenderWindow &window, sf::Vector2f position, sf::Vector
     this->font_size = size.y-4;
     this->lines = 0;
     this->type = ONE_LINE;
+    this->is_visible = true;
 }
 
 void TextField::update(sf::Event &event){
@@ -57,7 +59,7 @@ void TextField::update(sf::Event &event){
                 text.setString(tmp_string2);
             }
         }
-        else{
+        else if(type == ONE_LINE){
             sf::String tmp_string = text.getString();
             sf::String tmp_string2 = text.getString();
             if((char)event.text.unicode == 0x08){
@@ -88,7 +90,7 @@ void TextField::update(sf::Event &event){
     this->displayed_shape.setSize(size);
     this->cursor.setFillColor(cursor_color);
     this->text.setFont(font);
-    this->text.setPosition(sf::Vector2f(position.x+1,position.y+1));
+    this->text.setPosition(sf::Vector2f(position.x,position.y-text.getGlobalBounds().height/4));
     this->cursor.setPosition(sf::Vector2f(position.x+1+text.getGlobalBounds().width, position.y+2+(font_size+4)*lines));
     this->cursor.setSize(sf::Vector2f(cursor_width, font_size));
     

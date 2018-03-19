@@ -17,6 +17,7 @@ struct Button : public GUIObject{
     sf::Vector2f position;
     sf::Vector2f size;
     bool is_pressed;
+    bool is_toggle;
     ButtonState state;
     sf::Color normal_inner_color;
     sf::Color hovered_inner_color;
@@ -34,10 +35,11 @@ struct Button : public GUIObject{
     uint outline_thickness;
     
     
-    void (*on_pressed)(GUIObject *);
+    void (*on_click)(GUIObject *);
+    void (*on_release)(GUIObject *);
     
     Button();
-    Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size, void (*on_pressed)(GUIObject *));
+    Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size, void (*on_click)(GUIObject *) = 0);
 
     //getters
     sf::Vector2f getPosition() const;
@@ -56,6 +58,8 @@ struct Button : public GUIObject{
     sf::Font getFont() const;
     uint getIndent() const;
     uint getOutlineThikness() const;
+    Action getOnClick() const;
+    Action getOnRelease() const;
     
     //setters
     void setPosition(const sf::Vector2f position);
@@ -76,6 +80,9 @@ struct Button : public GUIObject{
     void setIndent(uint indent);
     void setOutlineThickness(uint outline_thickness);
     void setFontSize(uint size);
+    void setOnClick(const Action click);
+    void setOnRelease(const Action release);
+    void setToggle(const bool is_toggle);
     
     void update(sf::Event &event);
 };

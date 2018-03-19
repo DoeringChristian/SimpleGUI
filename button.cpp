@@ -16,21 +16,25 @@ Button::Button(){
     this->size = sf::Vector2f(0,0);
     this->position = sf::Vector2f(100,100);
     this->indent = 1;
-    this->on_pressed = 0;
+    this->on_click = 0;
+    this->on_release = 0;
     this->is_pressed = false;
     this->outline_thickness = 1;
     this->font = sf::Font();
     this->font.loadFromFile("arial.ttf");
     this->text = sf::Text("", font);
     this->state = NORMAL;
+    this->is_visible = true;
+    this->is_toggle = false;
 }
 
-Button::Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size, void (*on_pressed)(GUIObject *)){
+Button::Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size, void (*on_click)(GUIObject *)){
     this->window = &window;
     this->position = position;
     this->size = size;
-    this->on_pressed = on_pressed;
+    this->on_click = on_click;
     
+    this->on_release = 0;
     this->pressed_inner_color = sf::Color::Green;
     this->pressed_outer_color = sf::Color::White;
     this->hovered_inner_color = sf::Color::Green;
@@ -48,6 +52,8 @@ Button::Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f siz
     this->font.loadFromFile("arial.ttf");
     this->text = sf::Text("", font);
     this->state = NORMAL;
+    this->is_visible = true;
+    this->is_toggle = false;
 }
 
 sf::Vector2f Button::getPosition() const{
@@ -112,6 +118,14 @@ uint Button::getIndent() const{
 
 uint Button::getOutlineThikness() const{
     return outline_thickness;
+}
+
+Action Button::getOnClick() const{
+    return on_click;
+}
+
+Action Button::getOnRelease() const{
+    return on_release;
 }
 
 void Button::setPosition(const sf::Vector2f position){
@@ -187,26 +201,42 @@ void Button::setFontSize(uint size){
     this->text.setCharacterSize(size);
 }
 
+void Button::setOnClick(const Action click){
+    this->on_click = click;
+}
+
+void Button::setOnRelease(const Action release){
+    this->on_release = release;
+}
+
+void Button::setToggle(const bool is_toggle){
+    this->is_toggle = is_toggle;
+}
+
 void Button::update(sf::Event &event){
+    
     if(sf::Mouse::getPosition(*window).x > this->position.x
             && sf::Mouse::getPosition(*window).x < this->position.x+this->size.x
             && sf::Mouse::getPosition(*window).y > this->position.y
             && sf::Mouse::getPosition(*window).y < this->position.y+this->size.y){
         this->state = HOVERED;
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-            this->state = PRESSED;
-            if(!is_pressed)
-                this->on_pressed(this);
-            this->is_pressed = true;
-        }
-        else
-            this->is_pressed = false;
     }
-    else{
+    else
         this->state = NORMAL;
-        this->is_pressed = false;
+    if(this->state == HOVERED && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        this->state = PRESSED;
+    
+    if(this->state == PRESSED && !is_pressed && this->on_click != 0){
+        on_click(this);
+    }
+    else if((this->state == NORMAL || this->state == HOVERED)
+            && is_pressed && this->on_release != 0){
+        on_release(this);
     }
     
+    this->is_pressed = (this->state == PRESSED);
+    
+    //draw
     switch (state) {
     case NORMAL:
         this->displayed_shape.setFillColor(normal_inner_color);

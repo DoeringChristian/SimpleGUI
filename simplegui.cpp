@@ -24,5 +24,6 @@ void SimpleGUI::update(sf::Event &event){
         for(uint i = 0;i < objects.size();i++)
             objects[i]->is_viewed = false;
     for(uint i = 0;i < objects.size();i++)
-        objects[i]->update(event);
+        if(objects[i]->getVisible())
+            objects[i]->update(event);
 }

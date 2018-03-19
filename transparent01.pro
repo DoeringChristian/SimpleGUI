@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     simplegui.cpp \
     textfield.cpp \
     textlabel.cpp \
-    windowmover.cpp
+    windowmover.cpp \
+    radiobutton.cpp
 
 DEFINES += SFML_STATIC
 
@@ -28,4 +29,5 @@ HEADERS += \
     simplegui.h \
     textfield.h \
     textlabel.h \
-    windowmover.h
+    windowmover.h \
+    radiobutton.h

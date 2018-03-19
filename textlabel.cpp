@@ -4,6 +4,7 @@
 TextLabel::TextLabel(){
     this->window = 0;
     this->text_color = sf::Color::White;
+    this->is_visible = true;
 }
 
 TextLabel::TextLabel(sf::RenderWindow &window, sf::Vector2f position, uint font_size){
@@ -12,6 +13,7 @@ TextLabel::TextLabel(sf::RenderWindow &window, sf::Vector2f position, uint font_
     this->font_size = font_size;
     this->font.loadFromFile("arial.ttf");
     this->text.setFont(font);
+    this->is_visible = true;
 }
 
 void TextLabel::update(sf::Event &event){

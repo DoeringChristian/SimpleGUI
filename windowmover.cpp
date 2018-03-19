@@ -7,6 +7,7 @@ WindowMover::WindowMover(){
     this->outer_color = sf::Color::Blue;
     this->is_pressed = false;
     this->is_pressed_befor = false;
+    this->is_visible = true;
 }
 
 WindowMover::WindowMover(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size){
@@ -18,6 +19,7 @@ WindowMover::WindowMover(sf::RenderWindow &window, sf::Vector2f position, sf::Ve
     this->display_shape.setOutlineThickness(1);
     this->is_pressed = false;
     this->is_pressed_befor = false;
+    this->is_visible = true;
 }
 
 void WindowMover::update(sf::Event &event){

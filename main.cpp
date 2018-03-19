@@ -23,13 +23,15 @@ int main(){
     WindowMover mover(window, Vector2f(0,0), Vector2f(784,16));
     TextLabel label(window, Vector2f(50,10), 50);
     TextField field(window, Vector2f(100,100), Vector2f(300,50));
-    Button b(window, Vector2f(window.getSize().x-16,1), Vector2f(15,15), close);
+    Button b(window, Vector2f(window.getSize().x-16,1), Vector2f(15,15));
+    b.setOnRelease(close);
     b.setPressedInnerColor(sf::Color::Red);
     b.setHoveredInnerColor(sf::Color::Red);
     b.setHoveredOuterColor(sf::Color::Blue);
     b.setNormalOuterColor(sf::Color::Black);
     b.setText("X");
     b.setFontSize(10);
+    b.setToggle(true);
     label.setText("Write:");
     label.setTextColor(sf::Color::White);
     gui.add(mover);
