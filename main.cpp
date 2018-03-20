@@ -24,6 +24,10 @@ void rightAnswer(GUIObject *object){
         state++;
 }
 
+void close(GUIObject *object){
+    object->getWindow()->close();
+}
+
 int main(){
     sf::Vector2f button_positions[4];
     button_positions[0] = sf::Vector2f(window.getSize().x/16*1, 
@@ -42,6 +46,13 @@ int main(){
     float frameTime;
     
     SimpleGUI gui(window);
+    
+#if 1
+    ImageButton ib(window, sf::Vector2f(0,0), sf::Vector2f(50,50), "Logo.png");
+    ib.loadTexturePressed("Logo01.png");
+    ib.setOnRelease(close);
+    gui.add(ib);
+#endif
     
     Button answers[QUESTION_AMMOUNT][4];
     for(uint i = 0;i < QUESTION_AMMOUNT;i++){
@@ -119,6 +130,7 @@ int main(){
         event = Event();
         while(window.pollEvent(event)){
             if(event.type == Event::Closed){
+                window.close();
             }
         }
         frameTime = frameClock.getElapsedTime().asMilliseconds();

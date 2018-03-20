@@ -10,7 +10,8 @@ SOURCES += main.cpp \
     textfield.cpp \
     textlabel.cpp \
     windowmover.cpp \
-    radiobutton.cpp
+    radiobutton.cpp \
+    imagebutton.cpp
 
 DEFINES += SFML_STATIC
 
@@ -30,4 +31,5 @@ HEADERS += \
     textfield.h \
     textlabel.h \
     windowmover.h \
-    radiobutton.h
+    radiobutton.h \
+    imagebutton.h

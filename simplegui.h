@@ -8,6 +8,7 @@
 #include "textfield.h"
 #include "textlabel.h"
 #include "windowmover.h"
+#include "imagebutton.h"
 
 struct SimpleGUI{
     sf::RenderWindow *window;
