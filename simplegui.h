@@ -35,4 +35,9 @@ inline void setWindowAlpha(sf::RenderWindow& window, sf::Uint8 alpha = 255){
         SetLayeredWindowAttributes(window.getSystemHandle(), 0, alpha, LWA_ALPHA);
 }
 
+inline void makeWindowOnTop(sf::RenderWindow& window){
+        HWND hwnd = window.getSystemHandle();
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+}
+
 #endif // SIMPLEGUI_H
