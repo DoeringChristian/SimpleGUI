@@ -26,6 +26,7 @@ Button::Button(){
     this->state = NORMAL;
     this->is_visible = true;
     this->is_toggle = false;
+    this->font_size = 30;
 }
 
 Button::Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f size, void (*on_click)(GUIObject *)){
@@ -54,6 +55,7 @@ Button::Button(sf::RenderWindow &window, sf::Vector2f position, sf::Vector2f siz
     this->state = NORMAL;
     this->is_visible = true;
     this->is_toggle = false;
+    this->font_size = 30;
 }
 
 sf::Vector2f Button::getPosition() const{
@@ -198,7 +200,7 @@ void Button::setOutlineThickness(uint outline_thickness){
 }
 
 void Button::setFontSize(uint size){
-    this->text.setCharacterSize(size);
+    this->font_size = size;
 }
 
 void Button::setOnClick(const Action click){
@@ -223,7 +225,7 @@ void Button::update(sf::Event &event){
     }
     else
         this->state = NORMAL;
-    if(this->state == HOVERED && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    if((this->state == HOVERED) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
         this->state = PRESSED;
     
     if(this->state == PRESSED && !is_pressed && this->on_click != 0){
@@ -244,8 +246,6 @@ void Button::update(sf::Event &event){
         this->displayed_shape.setPosition(position);
         this->displayed_shape.setSize(size);
         this->displayed_shape.setOutlineThickness(outline_thickness);
-        this->text.setPosition(position.x+size.x/2-text.getGlobalBounds().width/2,
-                               position.y+size.y/2-text.getGlobalBounds().height/2);
         this->text.setFont(font);
         this->text.setColor(normal_text_color);
         break;
@@ -255,8 +255,6 @@ void Button::update(sf::Event &event){
         this->displayed_shape.setPosition(position);
         this->displayed_shape.setSize(size);
         this->displayed_shape.setOutlineThickness(outline_thickness);
-        this->text.setPosition(position.x+size.x/2-text.getGlobalBounds().width/2,
-                               position.y+size.y/2-text.getGlobalBounds().height/2);
         this->text.setFont(font);
         this->text.setColor(hovered_text_color);
         break;
@@ -266,12 +264,13 @@ void Button::update(sf::Event &event){
         this->displayed_shape.setPosition(sf::Vector2f(this->position.x+indent, this->position.y+indent));
         this->displayed_shape.setSize(sf::Vector2f(this->size.x-2*indent,this->size.y-2*indent));
         this->displayed_shape.setOutlineThickness(outline_thickness);
-        this->text.setPosition(position.x+size.x/2-text.getGlobalBounds().width/2,
-                               position.y+size.y/2-text.getGlobalBounds().height/2);
         this->text.setFont(font);
         this->text.setColor(pressed_text_color);
         break;
     }
+    this->text.setCharacterSize(font_size);
+    this->text.setPosition(position.x+size.x/2-text.getGlobalBounds().width/2,
+                           position.y+size.y/2-text.getGlobalBounds().height/4*3);
     
     window->draw(displayed_shape);
     window->draw(text);

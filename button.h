@@ -33,6 +33,7 @@ struct Button : public GUIObject{
     sf::Font font;
     uint indent;
     uint outline_thickness;
+    uint font_size;
     
     
     void (*on_click)(GUIObject *);
