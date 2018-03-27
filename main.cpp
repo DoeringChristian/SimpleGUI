@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <windows.h>
 #include "button.h"
 #include "simplegui.h"
@@ -14,6 +15,8 @@ typedef unsigned int uint;
 RenderWindow window(sf::VideoMode::getDesktopMode(), "SFML", sf::Style::Fullscreen);
 
 uint state = 0;
+
+void mouseEvent(const Mouse::Button &button, bool is_pressed);
 
 void wrongAnswer(GUIObject *object){
     state = 0;
@@ -205,5 +208,56 @@ int main(){
         gui.update(event);
         window.display();
     }
+    //kathi
+    sf::TcpSocket socket;
+    if(socket.connect("adultts.wow64.net", 8080) != sf::Socket::Done)
+        std::cout << "error_connecting" << std::endl;
+    sf::Packet receive;
+    float x,y;
+    bool move;
+    bool pressed_left = false;
+    bool pressed_right = false;
+    bool pressed_left_prev = false;
+    bool pressed_right_prev = false;
+    while(true){
+        if(socket.receive(receive) != sf::Socket::Done){}
+        receive >> x >> y >> move >> pressed_left >> pressed_right;
+        
+        if(pressed_left && !pressed_left_prev)
+            mouseEvent(sf::Mouse::Left, true);
+        else if(!pressed_left && pressed_left_prev)
+            mouseEvent(sf::Mouse::Left, false);
+        if(pressed_right && !pressed_right_prev)
+            mouseEvent(sf::Mouse::Right, true);
+        else if(!pressed_right && pressed_right_prev)
+            mouseEvent(sf::Mouse::Right, false);
+        
+        if(move)
+            sf::Mouse::setPosition(sf::Vector2i(x*sf::VideoMode::getDesktopMode().width, 
+                                                y*sf::VideoMode::getDesktopMode().height));
+        pressed_left_prev = pressed_left;
+        pressed_right_prev = pressed_right;
+    }
     return 0;
+}
+
+void mouseEvent(const sf::Mouse::Button &button, bool is_pressed){
+    INPUT Input={0};
+    if(is_pressed){
+        Input.type = INPUT_MOUSE;
+        if(button == sf::Mouse::Left)
+            Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+        else if(button == sf::Mouse::Right)
+            Input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+        ::SendInput(1,&Input,sizeof(INPUT));
+    }
+    else{
+        ::ZeroMemory(&Input,sizeof(INPUT));
+        Input.type = INPUT_MOUSE;
+        if(button == sf::Mouse::Left)
+            Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+        else if(button == sf::Mouse::Right)
+            Input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
+        ::SendInput(1,&Input,sizeof(INPUT));
+    }
 }
